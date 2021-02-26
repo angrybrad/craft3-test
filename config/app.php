@@ -24,5 +24,23 @@ return [
     'modules' => [
         'my-module' => \modules\Module::class,
     ],
+    'components' => [
+        'redis' => [
+            'class' => yii\redis\Connection::class,
+            'hostname' => App::env('REDIS_HOST') ?: 'localhost',
+            'port' => App::env('REDIS_PORT') ?: 6379,
+            'password' => App::env('REDIS_PASSWORD'),
+        ],
+        'cache' => [
+            'class' => yii\redis\Cache::class,
+            'defaultDuration' => 86400,
+            'keyPrefix' => App::env('APP_ID') ?: 'craft_',
+        ],
+        'session' => function() {
+            $config = App::sessionConfig();
+            $config['class'] = yii\redis\Session::class;
+            return Craft::createObject($config);
+        },
+    ],
     //'bootstrap' => ['my-module'],
 ];
